@@ -91,11 +91,11 @@ Buka browser ke `http://127.0.0.1:5000`
 
 ## Tim Pengembang
 
-| Nama | NIM | Peran |
-|---|---|---|
-| Bimo Rahma Sakti | 2355301030 | Pembuatan Laporan |
-| Muhammad Fajar Raffael | 2355301131 | Pembuatan Program Deep Learning |
-| Muhamad Isyan Maulana | 2355301137 | Pembuatan Program Web |
+| Nama | Peran |
+|---|---|
+| Bimo Rahma Sakti | Pembuatan Laporan |
+| Muhammad Fajar Raffael | Pembuatan Program Deep Learning |
+| Muhamad Isyan Maulana | Pembuatan Program Web |
 
 **Dosen Pengampu & AIL:**
 - Juni Nurma Sari, S.Kom., M.MT
