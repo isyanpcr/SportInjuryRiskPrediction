@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AthletiSense — Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --surface: #111827;
+            --surface2: #1a2235;
+            --border: #1e2d45;
+            --accent: #00e5ff;
+            --accent2: #ff3d6b;
+            --accent3: #7c3aed;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --sidebar-w: 240px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; }
+
+        /* ── SIDEBAR ── */
+        .sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+        .sidebar-brand { padding: 28px 24px 24px; border-bottom: 1px solid var(--border); }
+        .logo-mark { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent3)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: #000; margin-bottom: 12px; }
+        .sidebar-brand h2 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.02em; }
+        .sidebar-brand p { font-size: 11px; color: var(--muted); margin-top: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
+        .sidebar-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+        .nav-section-label { font-size: 10px; font-weight: 500; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 12px 4px; margin-top: 8px; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; text-decoration: none; color: var(--muted); font-size: 13.5px; font-weight: 400; transition: all 0.2s; position: relative; }
+        .nav-item:hover { background: var(--surface2); color: var(--text); }
+        .nav-item.active { background: rgba(0,229,255,0.1); color: var(--accent); font-weight: 500; }
+        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 18px; background: var(--accent); border-radius: 0 4px 4px 0; }
+        .nav-icon { width: 18px; height: 18px; flex-shrink: 0; }
+        .sidebar-footer { padding: 16px 12px; border-top: 1px solid var(--border); }
+        .model-badge { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); border-radius: 8px; padding: 10px 12px; }
+        .model-badge .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+        .model-badge .value { font-size: 12px; font-weight: 500; color: #a78bfa; margin-top: 2px; }
+
+        /* ── MAIN ── */
+        .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+        .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+        .page-crumb { font-size: 12px; color: var(--muted); }
+        .page-crumb span { color: var(--text); font-weight: 500; }
+        .topbar h1 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-top: 2px; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+        .status-label { font-size: 12px; color: #22c55e; }
+        .content { padding: 32px; flex: 1; }
+
+        /* ── HERO BANNER ── */
+        .hero-banner {
+            background: linear-gradient(120deg, rgba(0,229,255,0.07) 0%, rgba(124,58,237,0.09) 60%, rgba(255,61,107,0.05) 100%);
+            border: 1px solid rgba(0,229,255,0.15);
+            border-radius: 20px;
+            padding: 32px 36px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.4s ease both;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(0,229,255,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+        .hero-title span { color: var(--accent); }
+        .hero-sub { font-size: 13.5px; color: var(--muted); line-height: 1.6; max-width: 480px; }
+        .hero-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+            color: #22c55e; font-size: 11px; font-weight: 500; padding: 4px 12px;
+            border-radius: 20px; margin-bottom: 10px;
+        }
+        .hero-pill .dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
+        .hero-actions { display: flex; gap: 10px; flex-shrink: 0; }
+        .btn-primary { background: var(--accent); color: #000; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; padding: 11px 22px; border-radius: 10px; text-decoration: none; white-space: nowrap; transition: all 0.2s; }
+        .btn-primary:hover { background: #fff; box-shadow: 0 6px 20px rgba(0,229,255,0.3); transform: translateY(-1px); }
+        .btn-ghost { background: transparent; color: var(--text); font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; padding: 11px 22px; border-radius: 10px; text-decoration: none; border: 1px solid var(--border); white-space: nowrap; transition: all 0.2s; }
+        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ── STATS GRID ── */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; transition: transform 0.2s, border-color 0.2s; animation: fadeUp 0.4s ease both; }
+        .stat-card:nth-child(1){animation-delay:.05s} .stat-card:nth-child(2){animation-delay:.10s} .stat-card:nth-child(3){animation-delay:.15s} .stat-card:nth-child(4){animation-delay:.20s}
+        .stat-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+        .stat-card::after { content:''; position:absolute; top:0; right:0; width:80px; height:80px; border-radius:50%; background:var(--card-glow, rgba(0,229,255,0.06)); transform:translate(20px,-20px); }
+        .stat-card:nth-child(2){--card-glow:rgba(255,61,107,0.06)} .stat-card:nth-child(3){--card-glow:rgba(124,58,237,0.06)} .stat-card:nth-child(4){--card-glow:rgba(34,197,94,0.06)}
+        .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 10px; }
+        .stat-value { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+        .stat-sub { font-size: 12px; color: var(--muted); }
+        .stat-sub .up { color: #22c55e; } .stat-sub .down { color: var(--accent2); }
+
+        /* ── LOWER GRID ── */
+        .lower-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; animation: fadeUp 0.4s ease 0.25s both; }
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .card-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+        .card-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
+
+        /* Risk bars */
+        .risk-bar-wrap { margin-bottom: 18px; }
+        .risk-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+        .risk-bar-track { height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+        .risk-bar-fill { height: 100%; border-radius: 99px; }
+
+        /* Feature list */
+        .feature-list { display: flex; flex-direction: column; gap: 10px; }
+        .feature-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--surface2); border-radius: 10px; font-size: 13px; }
+        .feature-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .feature-bar { flex: 1; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+        .feature-bar-fill { height: 100%; border-radius: 99px; }
+        .feature-pct { font-size: 12px; font-weight: 500; color: var(--text); min-width: 32px; text-align: right; }
+
+        /* Info list */
+        .info-list { display: flex; flex-direction: column; gap: 0; }
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .info-row:last-child { border-bottom: none; }
+        .info-key { color: var(--muted); }
+        .info-val { font-weight: 500; background: var(--surface2); padding: 3px 10px; border-radius: 6px; }
+
+        /* Pipeline steps */
+        .pipeline { display: flex; flex-direction: column; gap: 0; }
+        .pipeline-step { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .pipeline-step:last-child { border-bottom: none; }
+        .pipe-num { width: 26px; height: 26px; border-radius: 50%; background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.25); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+        .pipe-body .pipe-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+        .pipe-body .pipe-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+        @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="logo-mark">AS</div>
+        <h2>AthletiSense</h2>
+        <p>Injury Risk System</p>
+    </div>
+    <nav class="sidebar-nav">
+        <span class="nav-section-label">Menu Utama</span>
+        <a href="/" class="nav-item active">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+        </a>
+        <a href="/predict-page" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+            Prediksi Risiko
+        </a>
+        <span class="nav-section-label">Informasi</span>
+        <a href="/about" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 12v4"/></svg>
+            Tentang Sistem
+        </a>
+        <a href="/team" class="nav-item">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Tim & Dokumentasi
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <div class="model-badge">
+            <div class="label">Model Status</div>
+            <div class="value">ANN · Active</div>
+        </div>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+    <header class="topbar">
+        <div>
+            <div class="page-crumb">Halaman: <span>Dashboard</span></div>
+            <h1>Dashboard Overview</h1>
+        </div>
+        <div class="topbar-right">
+            <div class="status-dot"></div>
+            <span class="status-label">Model Aktif</span>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <!-- HERO -->
+        <div class="hero-banner">
+            <div>
+                <div class="hero-pill"><div class="dot"></div> Sistem Prediksi Aktif</div>
+                <div class="hero-title">Selamat Datang di <span>AthletiSense</span></div>
+                <div class="hero-sub">Sistem prediksi risiko cedera atlet berbasis Artificial Neural Network. Masukkan data biometrik dan parameter latihan untuk mendapatkan analisis risiko secara instan.</div>
+            </div>
+            <div class="hero-actions">
+                <a href="/predict-page" class="btn-primary">Mulai Prediksi →</a>
+                <a href="/about" class="btn-ghost">Pelajari Sistem</a>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Atlet Dataset</div>
+                <div class="stat-value" style="color:var(--accent)">600</div>
+                <div class="stat-sub">335 wanita · 265 pria</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Risiko Tinggi</div>
+                <div class="stat-value" style="color:var(--accent2)">31.5%</div>
+                <div class="stat-sub"><span class="down">189</span> dari 600 atlet</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Fitur Input</div>
+                <div class="stat-value" style="color:#a78bfa">14</div>
+                <div class="stat-sub">Biometrik + Latihan</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Risiko Rendah</div>
+                <div class="stat-value" style="color:#22c55e">68.5%</div>
+                <div class="stat-sub"><span class="up">411</span> dari 600 atlet</div>
+            </div>
+        </div>
+
+        <!-- LOWER GRID -->
+        <div class="lower-grid">
+
+            <!-- Risk Distribution -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Distribusi Risiko Dataset</span>
+                    <span class="card-badge">SIRP-600</span>
+                </div>
+                <div class="risk-bar-wrap">
+                    <div class="risk-bar-label"><span>Risiko Rendah (Low Risk)</span><span style="color:var(--text)">68.5% · 411 Atlet</span></div>
+                    <div class="risk-bar-track"><div class="risk-bar-fill" style="width:68.5%;background:linear-gradient(90deg,#22c55e,#16a34a);"></div></div>
+                </div>
+                <div class="risk-bar-wrap">
+                    <div class="risk-bar-label"><span>Risiko Tinggi (High Risk)</span><span style="color:var(--text)">31.5% · 189 Atlet</span></div>
+                    <div class="risk-bar-track"><div class="risk-bar-fill" style="width:31.5%;background:linear-gradient(90deg,var(--accent2),#e11d48);"></div></div>
+                </div>
+                <div class="risk-bar-wrap">
+                    <div class="risk-bar-label"><span>Komposisi Gender: Wanita</span><span style="color:var(--text)">55.8% · 335</span></div>
+                    <div class="risk-bar-track"><div class="risk-bar-fill" style="width:55.8%;background:linear-gradient(90deg,var(--accent3),var(--accent));"></div></div>
+                </div>
+                <div class="risk-bar-wrap" style="margin-bottom:0">
+                    <div class="risk-bar-label"><span>Komposisi Gender: Pria</span><span style="color:var(--text)">44.2% · 265</span></div>
+                    <div class="risk-bar-track"><div class="risk-bar-fill" style="width:44.2%;background:linear-gradient(90deg,#f97316,#eab308);"></div></div>
+                </div>
+            </div>
+
+            <!-- Top Risk Factors -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Faktor Risiko Utama</span>
+                    <span class="card-badge">ANN Features</span>
+                </div>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-dot" style="background:#ff3d6b;"></div>
+                        <span style="flex:1;font-size:12px;">Riwayat Cedera</span>
+                        <div class="feature-bar"><div class="feature-bar-fill" style="width:92%;background:#ff3d6b;"></div></div>
+                        <span class="feature-pct">92%</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-dot" style="background:#f97316;"></div>
+                        <span style="flex:1;font-size:12px;">Tingkat Stres</span>
+                        <div class="feature-bar"><div class="feature-bar-fill" style="width:81%;background:#f97316;"></div></div>
+                        <span class="feature-pct">81%</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-dot" style="background:#eab308;"></div>
+                        <span style="flex:1;font-size:12px;">Skor Fleksibilitas</span>
+                        <div class="feature-bar"><div class="feature-bar-fill" style="width:74%;background:#eab308;"></div></div>
+                        <span class="feature-pct">74%</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-dot" style="background:#00e5ff;"></div>
+                        <span style="flex:1;font-size:12px;">Intensitas Latihan</span>
+                        <div class="feature-bar"><div class="feature-bar-fill" style="width:67%;background:#00e5ff;"></div></div>
+                        <span class="feature-pct">67%</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-dot" style="background:#a78bfa;"></div>
+                        <span style="flex:1;font-size:12px;">Jam Tidur</span>
+                        <div class="feature-bar"><div class="feature-bar-fill" style="width:58%;background:#a78bfa;"></div></div>
+                        <span class="feature-pct">58%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pipeline Proses -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Alur Prediksi</span>
+                    <span class="card-badge">Pipeline</span>
+                </div>
+                <div class="pipeline">
+                    <div class="pipeline-step">
+                        <div class="pipe-num">1</div>
+                        <div class="pipe-body"><div class="pipe-title">Input Data Atlet</div><div class="pipe-desc">14 parameter biometrik dan latihan diisi melalui form prediksi.</div></div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="pipe-num">2</div>
+                        <div class="pipe-body"><div class="pipe-title">Preprocessing & Normalisasi</div><div class="pipe-desc">Encoding gender, StandardScaler untuk seluruh fitur numerik.</div></div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="pipe-num">3</div>
+                        <div class="pipe-body"><div class="pipe-title">Inferensi ANN</div><div class="pipe-desc">Model menghasilkan probabilitas risiko (0–1) via fungsi Sigmoid.</div></div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="pipe-num">4</div>
+                        <div class="pipe-body"><div class="pipe-title">Hasil & Rekomendasi</div><div class="pipe-desc">Threshold ≥ 0.5 → High Risk. Sistem memberikan rekomendasi preventif.</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Info -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Spesifikasi Model & Dataset</span>
+                    <span class="card-badge">ANN</span>
+                </div>
+                <div class="info-list">
+                    <div class="info-row"><span class="info-key">Tipe Model</span><span class="info-val">Artificial Neural Network</span></div>
+                    <div class="info-row"><span class="info-key">Framework</span><span class="info-val">TensorFlow / Keras</span></div>
+                    <div class="info-row"><span class="info-key">Dataset</span><span class="info-val">SIRP-600 (Kaggle)</span></div>
+                    <div class="info-row"><span class="info-key">Jumlah Sampel</span><span class="info-val">600 Atlet</span></div>
+                    <div class="info-row"><span class="info-key">Output Aktivasi</span><span class="info-val">Sigmoid (Biner)</span></div>
+                    <div class="info-row"><span class="info-key">Threshold</span><span class="info-val" style="color:#22c55e;">≥ 0.5 → High Risk</span></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+</body>
+</html>
